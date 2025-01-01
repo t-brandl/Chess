@@ -11,7 +11,7 @@ We have a Figure Interface, `IFigure`, which is implemented by the different che
 
 
 # Requirements
-**Java**: JDK 23 or higher
+**Java**: JDK 23 or higher  
 **Maven**: 3.9.8 or higher
 
 ## Key Dependencies
