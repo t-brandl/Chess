@@ -1,4 +1,4 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
  * Bishop figures class

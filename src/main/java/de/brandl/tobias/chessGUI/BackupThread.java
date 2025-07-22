@@ -1,4 +1,4 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
  * Creates a backup after 45 seconds every 5 seconds
  */
 public class BackupThread extends Thread {
-    private static Logger log = LogManager.getLogger(BackupThread.class);
+    private static final Logger log = LogManager.getLogger(BackupThread.class);
     private ControlFlow mainflow;
 
     public BackupThread(ControlFlow mainflow) {

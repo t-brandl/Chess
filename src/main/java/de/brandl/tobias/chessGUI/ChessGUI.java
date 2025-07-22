@@ -1,4 +1,4 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class ChessGUI extends Application {
 
-    private static Logger log = LogManager.getLogger(ChessGUI.class);
+    private static final Logger log = LogManager.getLogger(ChessGUI.class);
 
     private GridPane gridpane;
     private Label turnPreview;
@@ -47,7 +47,7 @@ public class ChessGUI extends Application {
      * 11 = wr
      * 12 = empty
      */
-    private HashMap<Integer, Image> images = new HashMap<Integer, Image>();
+    private final HashMap<Integer, Image> images = new HashMap<Integer, Image>();
 
     public static void main(String[] args) {
         launch(args);
@@ -65,7 +65,7 @@ public class ChessGUI extends Application {
         gridpane.add(playfield[xpos][ypos], xpos, ypos);
         playfield[xpos][ypos].setOnAction(event -> {
             if (!click1Occured && !emptyClickable) {
-                log.debug("1st click by " + col + " at x: " + xpos + " y: " + ypos);
+                log.debug("1st click by {} at x: {} y: {}", col, xpos, ypos);
                 fromX = xpos;
                 fromY = ypos;
                 click1Occured = true;
@@ -85,37 +85,41 @@ public class ChessGUI extends Application {
                 log.debug("2nd click happened, making move");
                 click1Occured = false;
                 synchronized (mainflow) {
+                    IFigure source = mainflow.getFigureAt(fromX, fromY);
+                    IFigure targetBefore = mainflow.getFigureAt(xpos, ypos);
+
                     mainflow.makeMove(fromX, fromY, xpos, ypos);
+                    IFigure targetAfter = mainflow.getFigureAt(xpos, ypos);
+
+                    // Only update GUI if a real move occurred
+                    if (targetAfter.getFigure() == source.getFigure()
+                            && targetAfter.getColor() == source.getColor()
+                            && (targetBefore.getFigure() != targetAfter.getFigure()
+                            || targetBefore.getColor() != targetAfter.getColor())) {
+
+                        updateButtonGraphics(xpos, ypos, targetAfter);
+                        updateButtonGraphics(fromX, fromY, FigureFactory.getFigure('-', 'e'));
+
+                        if ((targetAfter.getFigure() == 'P' && ypos == 7)
+                                || (targetAfter.getFigure() == 'p' && ypos == 0)) {
+                            promotionWindow(targetAfter.getColor(), xpos, ypos);
+                        }
+
+                        // Reset clickable state
+                        if (mainflow.getTurn()) {
+                            whiteClickable = true;
+                            blackClickable = false;
+                            emptyClickable = false;
+                        } else {
+                            whiteClickable = false;
+                            blackClickable = true;
+                            emptyClickable = false;
+                        }
+                    } else {
+                        log.warn("Move was rejected by ControlFlow. Skipping GUI update.");
+                    }
                 }
-                playfield[xpos][ypos].setGraphic(playfield[fromX][fromY].getGraphic());
-                playfield[xpos][ypos].removeEventFilter(ActionEvent.ACTION, emptyFigureEvent);
-                playfield[xpos][ypos].removeEventFilter(ActionEvent.ACTION, whiteFigureEvent);
-                playfield[xpos][ypos].removeEventFilter(ActionEvent.ACTION, blackFigureEvent);
-                playfield[fromX][fromY].removeEventFilter(ActionEvent.ACTION, whiteFigureEvent);
-                playfield[fromX][fromY].removeEventFilter(ActionEvent.ACTION, blackFigureEvent);
-                if (mainflow.getFigureAt(xpos, ypos).getColor() == 'b') {
-                    playfield[xpos][ypos].addEventFilter(ActionEvent.ACTION, blackFigureEvent);
-                } else {
-                    playfield[xpos][ypos].addEventFilter(ActionEvent.ACTION, whiteFigureEvent);
-                }
-                playfield[fromX][fromY].addEventFilter(ActionEvent.ACTION, emptyFigureEvent);
-                playfield[fromX][fromY].setGraphic(new ImageView(images.get(12)));
-                if ((mainflow.getFigureAt(xpos, ypos).getFigure() == 'P') && (ypos == 7)) {
-                    promotionWindow(mainflow.getFigureAt(xpos, ypos).getColor(), xpos, ypos);
-                } else if ((mainflow.getFigureAt(xpos, ypos).getFigure() == 'p') && (ypos == 0)) {
-                    promotionWindow(mainflow.getFigureAt(xpos, ypos).getColor(), xpos, ypos);
-                }
-                if (mainflow.getTurn()) {
-                    log.debug("2nd click happened, whites turn");
-                    whiteClickable = true;
-                    blackClickable = false;
-                    emptyClickable = false;
-                } else {
-                    log.debug("2nd click happened, blacks turn");
-                    whiteClickable = false;
-                    blackClickable = true;
-                    emptyClickable = false;
-                }
+
             }
         });
         log.debug("Adding EventFilter");
@@ -127,6 +131,34 @@ public class ChessGUI extends Application {
             playfield[xpos][ypos].addEventFilter(ActionEvent.ACTION, emptyFigureEvent);
         }
     }
+
+    /**
+     * updates graphics for Buttons in the GUI
+     * @param x X-Axis position
+     * @param y Y-Axis Position
+     * @param figure Figure
+     */
+    private void updateButtonGraphics(int x, int y, IFigure figure) {
+        int imageKey;
+        switch (figure.getFigure()) {
+            case 'b': imageKey = 6; break;
+            case 'B': imageKey = 0; break;
+            case 'k': imageKey = 7; break;
+            case 'K': imageKey = 1; break;
+            case 'n': imageKey = 8; break;
+            case 'N': imageKey = 2; break;
+            case 'p': imageKey = 9; break;
+            case 'P': imageKey = 3; break;
+            case 'q': imageKey = 10; break;
+            case 'Q': imageKey = 4; break;
+            case 'r': imageKey = 11; break;
+            case 'R': imageKey = 5; break;
+            default: imageKey = 12; break;
+        }
+
+        playfield[x][y].setGraphic(new ImageView(images.get(imageKey)));
+    }
+
 
     /**
      * PopUp Dialog to exchange a pawn to another figure (Queen, Bishop, Knight, Rook)
@@ -214,7 +246,7 @@ public class ChessGUI extends Application {
      * @param selected Chess Figure Icon ID
      */
     private void promotingPawn(int posX, int posY, char figure, int selected) {
-        log.info("Promoting a pawn to " + figure);
+        log.info("Promoting a pawn to {}", figure);
         synchronized (mainflow) {
             mainflow.promotePawn(posX, posY, figure);
         }

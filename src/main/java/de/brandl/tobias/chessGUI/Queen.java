@@ -1,13 +1,13 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
- * Pawn Figures Class
+ * Queen Figures class
  */
-public class Pawn implements IFigure {
+public class Queen implements IFigure {
     private final char col;
     private final char fig;
 
-    protected Pawn(char playerColor, char fig){
+    protected Queen(char playerColor, char fig){
         col = playerColor;
         this.fig = fig;
     }

@@ -1,14 +1,13 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
- * Rook figures class
+ * King figures class
  */
-public class Rook implements IFigure {
+public class King implements IFigure {
     private final char col;
     private final char fig;
 
-    protected Rook(char playerColor, char fig){
-
+    protected King(char playerColor, char fig){
         col = playerColor;
         this.fig = fig;
     }
@@ -16,6 +15,7 @@ public class Rook implements IFigure {
     public char getColor() {
         return col;
     }
+
     public char getFigure(){
         return fig;
     }

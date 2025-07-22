@@ -1,4 +1,4 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class ControlFlow {
 
-    private static Logger log = LogManager.getLogger(ControlFlow.class);
+    private static final Logger log = LogManager.getLogger(ControlFlow.class);
     private IFigure[][] playfield;
     private boolean turnToken;
 
@@ -36,7 +36,7 @@ public class ControlFlow {
      * @return Figure at (xPos|yPos)
      */
     protected final IFigure getFigureAt(int xPos, int yPos) {
-        log.info("returning Figure" + playfield[xPos][yPos].getFigure() + " at x: " + xPos + ", y: " + yPos);
+        log.info("returning Figure{} at x: {}, y: {}", playfield[xPos][yPos].getFigure(), xPos, yPos);
         return FigureFactory.getFigure(playfield[xPos][yPos].getFigure(), playfield[xPos][yPos].getColor());
     }
 
@@ -50,7 +50,7 @@ public class ControlFlow {
     public long getFigureCount(char playerColor) {
         LinkedList<IFigure> list = figsToList();
         long count = list.parallelStream().filter(item -> (item.getColor() == playerColor)).count();
-        log.info("counted " + count + " figues for " + playerColor);
+        log.info("counted {} figues for {}", count, playerColor);
         return count;
     }
 
@@ -60,7 +60,7 @@ public class ControlFlow {
      * @return LinkedList of the playfield
      */
     private LinkedList<IFigure> figsToList() {
-        LinkedList<IFigure> list = new LinkedList<IFigure>();
+        LinkedList<IFigure> list = new LinkedList<>();
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 list.addLast(playfield[i][j]);
@@ -79,7 +79,7 @@ public class ControlFlow {
     private List<IFigure> getOnePlayersFigures(char playerColor) {
         LinkedList<IFigure> list = figsToList();
         List<IFigure> fig = list.parallelStream().filter(item -> (item.getColor() == playerColor)).collect(Collectors.toList());
-        log.info("Current lost contains for " + playerColor + ": " + fig.toString());
+        log.info("Current lost contains for {}: {}", playerColor, fig.toString());
         return fig;
     }
 
@@ -129,13 +129,13 @@ public class ControlFlow {
     /**
      * Moves a figure from Point A (fromX | fromY) to Point B (toX | toY)
      *
-     * @param fromX X axis point where the figure is placed
-     * @param fromY Y axis point where the figure is placed
-     * @param toX   X axis point where the figure wants to go
-     * @param toY   Y axis point where the figure wants to go
+     * @param fromX X-axis point where the figure is placed
+     * @param fromY Y-axis point where the figure is placed
+     * @param toX   X-axis point where the figure wants to go
+     * @param toY   Y-axis point where the figure wants to go
      */
     protected void makeMove(int fromX, int fromY, int toX, int toY) {
-        log.info("Moving the Figure: " + playfield[fromX][fromY].getFigure() + " from x:" + fromX + " y:" + fromY + " to x:" + toX + " y:" + toY);
+        log.info("Moving the Figure: {} from x:{} y:{} to x:{} y:{}", playfield[fromX][fromY].getFigure(), fromX, fromY, toX, toY);
         if ((!checkValidMove(fromX, fromY)) || (!checkValidMove(toX, toY))) {
             return;
         }
@@ -151,7 +151,7 @@ public class ControlFlow {
      * @param figure Figure to be promoted
      */
     protected void promotePawn(int toX, int toY, char figure) {
-        log.info("Promoting Pawn at x:" + toX + " y:" + toY);
+        log.info("Promoting Pawn at x:{} y:{}", toX, toY);
         playfield[toX][toY] = FigureFactory.getFigure(figure, playfield[toX][toY].getColor());
     }
 
@@ -164,15 +164,15 @@ public class ControlFlow {
      */
     protected void saveGame(String fileName) {
         try (PrintWriter write_line = new PrintWriter(new FileWriter(fileName))) {
-            log.info("Saving game to savefile named: " + fileName);
-            String saveLine = "";
+            log.info("Saving game to savefile named: {}", fileName);
+            StringBuilder saveLine = new StringBuilder();
             for (int i = 0; i < 8; i++) {
                 for (int j = 0; j < 8; j++) {
-                    saveLine += playfield[j][i].getFigure();
+                    saveLine.append(playfield[j][i].getFigure());
                 }
-                log.info("Writing following to savefile " + ": " + saveLine);
+                log.info("Writing following to savefile : {}", saveLine);
                 write_line.printf("%s" + "%n", saveLine);
-                saveLine = "";
+                saveLine = new StringBuilder();
             }
             if (turnToken) {
                 write_line.printf("w");
@@ -180,7 +180,7 @@ public class ControlFlow {
                 write_line.printf("b");
             }
         } catch (Exception e) {
-            log.error("Can't write to file " + e);
+            log.error("Can't write to file {}", String.valueOf(e));
         }
     }
 
@@ -194,7 +194,7 @@ public class ControlFlow {
         Set<Character> blackFigures = Set.of('B', 'K', 'N', 'P', 'Q', 'R');
         Set<Character> whiteFigures = Set.of('b', 'k', 'n', 'p', 'q', 'r');
         boolean loadedTurnToken = false;
-        log.info("Loading game from savefile: " + file);
+        log.info("Loading game from savefile: {}", file);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -202,7 +202,7 @@ public class ControlFlow {
 
             // Read each line and process it
             while ((line = br.readLine()) != null) {
-                log.info("Reading from line " + row + ": " + line);
+                log.info("Reading from line {}: {}", row, line);
                 if (row < 8) {
                     // For the first 8 rows, populate the board
                     for (int col = 0; col < line.length() && col < 8; col++) {
@@ -250,7 +250,7 @@ public class ControlFlow {
     /**
      * white = true, black = false
      *
-     * @return
+     * @return true for white, false for black
      */
     protected boolean getTurn() {
         log.info("getting Turn");
@@ -260,11 +260,11 @@ public class ControlFlow {
     /**
      * checks if move is in bound of array
      *
-     * @param a
-     * @param b
-     * @return
+     * @param a X-axis coordinate
+     * @param b Y-axis coordinate
+     * @return true if valid move, else false
      */
     private boolean checkValidMove(int a, int b) {
-        return ((a < 0) || (a > 7) || (b < 0) || (b > 7));
+        return a >= 0 && a < 8 && b >= 0 && b < 8;
     }
 }

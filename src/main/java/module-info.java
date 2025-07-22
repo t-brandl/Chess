@@ -1,8 +1,8 @@
-module de.hdmstuttgart.mi.se2.tb130.chess {
+module de.brandl.tobias.chessGUI {
     requires javafx.controls;
     requires javafx.fxml;
     requires org.apache.logging.log4j;
 
-    opens de.hdmstuttgart.mi.se2.tb130.chess to javafx.fxml;
-    exports de.hdmstuttgart.mi.se2.tb130.chess;
+    opens de.brandl.tobias.chessGUI to javafx.fxml;
+    exports de.brandl.tobias.chessGUI;
 }

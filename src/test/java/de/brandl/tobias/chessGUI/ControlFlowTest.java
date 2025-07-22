@@ -1,8 +1,7 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 import org.junit.Test;
 import org.junit.Assert;
-
 
 public class ControlFlowTest {
 

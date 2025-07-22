@@ -1,13 +1,13 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
- * Knight Figures Class
+ * Pawn Figures Class
  */
-public class Knight implements IFigure {
+public class Pawn implements IFigure {
     private final char col;
     private final char fig;
 
-    protected Knight(char playerColor, char fig){
+    protected Pawn(char playerColor, char fig){
         col = playerColor;
         this.fig = fig;
     }

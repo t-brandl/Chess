@@ -1,13 +1,14 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
- * Queen Figures class
+ * Rook figures class
  */
-public class Queen implements IFigure {
+public class Rook implements IFigure {
     private final char col;
     private final char fig;
 
-    protected Queen(char playerColor, char fig){
+    protected Rook(char playerColor, char fig){
+
         col = playerColor;
         this.fig = fig;
     }

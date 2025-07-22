@@ -1,13 +1,13 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 /**
- * King figures class
+ * Knight Figures Class
  */
-public class King implements IFigure {
+public class Knight implements IFigure {
     private final char col;
     private final char fig;
 
-    protected King(char playerColor, char fig){
+    protected Knight(char playerColor, char fig){
         col = playerColor;
         this.fig = fig;
     }
@@ -15,7 +15,6 @@ public class King implements IFigure {
     public char getColor() {
         return col;
     }
-
     public char getFigure(){
         return fig;
     }

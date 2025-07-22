@@ -1,11 +1,11 @@
-package de.hdmstuttgart.mi.se2.tb130.chess;
+package de.brandl.tobias.chessGUI;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class FigureFactory {
 
-    private static Logger log = LogManager.getLogger(FigureFactory.class);
+    private static final Logger log = LogManager.getLogger(FigureFactory.class);
 
     /**
      * Factory method for the chess figures.
@@ -22,7 +22,7 @@ public class FigureFactory {
      * @return selected chess figure in the specified player color
      */
     public static IFigure getFigure(char figure, char color){
-        log.debug("Creating a Figure: " + figure);
+        log.debug("Creating a Figure: {}", figure);
         if(color == 'e'){
             return new EmptyField(color, figure);
         } else if(color == 'w'){
@@ -39,7 +39,7 @@ public class FigureFactory {
             }else if(figure == 'r'){
                 return new Rook(color, figure);
             } else {
-                log.error("Wrong white Figure selected: " + figure);
+                log.error("Wrong white Figure selected: {}", figure);
             }
         } else if (color == 'b') {
             if(figure == 'B') {
@@ -55,10 +55,10 @@ public class FigureFactory {
             }else if(figure == 'R'){
                 return new Rook(color, figure);
             } else {
-                log.error("Wrong black Figure selected: " + figure);
+                log.error("Wrong black Figure selected: {}", figure);
             }
         } else {
-            log.error("Wrong Color selected: " + color);
+            log.error("Wrong Color selected: {}", color);
         }
 
 
