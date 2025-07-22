@@ -28,4 +28,4 @@ All dependencies are managed through Maven. For the full list, see the `pom.xml`
 
 # How to Run
 Open the project in the IDE of your choice, I used `IntelliJ IDEA`. Sync the Maven file and Run `de.brandl.tobias.chessGUI.ChessGUI`.
-Alternatively, you can also build it with Maven and run the jar or use uploaded release.
+Alternatively, you can also build and run it with Maven.
